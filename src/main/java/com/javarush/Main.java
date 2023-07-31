@@ -36,6 +36,11 @@ public class Main {
     private final CityDAO cityDAO;
     private final CountryDAO countryDAO;
 
+    private final String vmIP = "192.168.224.58";
+    private final String mysqlPort = "3306";
+    private final Integer redisPort = 6379;
+
+
     public Main() {
         sessionFactory = prepareRelationalDb();
         cityDAO = new CityDAO(sessionFactory);
@@ -50,7 +55,7 @@ public class Main {
         Properties properties = new Properties();
         properties.put(Environment.DIALECT, "org.hibernate.dialect.MySQL8Dialect");
         properties.put(Environment.DRIVER, "com.p6spy.engine.spy.P6SpyDriver");
-        properties.put(Environment.URL, "jdbc:p6spy:mysql://192.168.224.58:3306/world");
+        properties.put(Environment.URL, "jdbc:p6spy:mysql://"+vmIP+":"+mysqlPort+"/world");
         properties.put(Environment.USER, "root");
         properties.put(Environment.PASS, "root");
         properties.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
@@ -121,7 +126,7 @@ public class Main {
     }
 
     private RedisClient prepareRedisClient() {
-        RedisClient redisClient = RedisClient.create(RedisURI.create("192.168.224.58", 6379));
+        RedisClient redisClient = RedisClient.create(RedisURI.create(vmIP, redisPort));
         try (StatefulRedisConnection<String, String> connection = redisClient.connect()) {
             System.out.println("\nConnected to Redis\n");
         }
